@@ -1,0 +1,371 @@
+{
+  "name": "My Job Email Labelling",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -340,
+        -60
+      ],
+      "id": " ",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": " ",
+          "name": " "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Applications",
+              "description": "Classify the following email into the \"Applications\" category only if it indicates that I have successfully applied for a job and the application is not made via LinkedIn. Look for phrases such as:  \"You have successfully applied\"  \"Application submitted\"  \"Thank you for applying\"  \"Your application has been received\""
+            },
+            {
+              "category": "Interview",
+              "description": "Classify the following email into the \"Interviews\" category only if it indicates that:  An interview has been scheduled  The sender is requesting to schedule an interview  The application has moved forward to the next step, such as screening or interview round  Look for phrases such as:  \"We'd like to schedule an interview\"  \"Your interview is scheduled\"  \"You have been shortlisted\"  \"Next steps in the hiring process\"  \"We are moving forward with your application\" or if it is Calendar event "
+            },
+            {
+              "category": "Job alerts",
+              "description": "Classify the following email into the \"Job Alerts\" category only if it contains job recommendations, suggestions, or listings that might match my profile.  Look for phrases such as:  \"Jobs you may be interested in\"  \"New jobs matching your profile\"  \"You might like these opportunities\"  \"We found some jobs for you\"  \"Based on your search, here are some roles\""
+            },
+            {
+              "category": "Linked in Short applicaitions",
+              "description": "Classify the following email into the \"Linked in Short applicaitions\" category only if it indicates that a job application was successfully submitted through LinkedIn.  Look for phrases such as:  \"You applied via LinkedIn\"  \"Your application has been submitted on LinkedIn\"  \"Thanks for applying through LinkedIn\"  \"You successfully applied using LinkedIn\""
+            },
+            {
+              "category": "Rejections",
+              "description": "Classify the following email into the \"Rejections\" category only if it clearly indicates that I have not been selected or my application was not successful.  Look for phrases such as:  \"We regret to inform you\"  \"You have not been selected\"  \"Not moving forward \"  \"Unfortunately, we have decided not to proceed\" \"Moving forward with other candidates\" \"Unfortunately\""
+            },
+            {
+              "category": "Others",
+              "description": "Classify the following email into the \"Others\" category only if it does not clearly belong to any of the following categories:  Applications   Linked in Short applicaitions Interviews  Job Alerts  Rejections"
+            }
+          ]
+        },
+        "options": {
+          "systemPromptTemplate": "Please classify the text provided by the user into one of the following categories: {categories}, and use the provided formatting instructions below. Don't explain, and only output the json."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1,
+      "position": [
+        -120,
+        -60
+      ],
+      "id": " ",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -40,
+        160
+      ],
+      "id": " ",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": " ",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_5074720532350658921"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        340,
+        -340
+      ],
+      "id": " ",
+      "name": "Interview",
+      "webhookId": " ",
+      "alwaysOutputData": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": " ",
+          "name": " "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_8295313782727066108"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        340,
+        -500
+      ],
+      "id": " ",
+      "name": "Applications",
+      "webhookId": " ",
+      "alwaysOutputData": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": " ",
+          "name": " "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_1948580574623058339"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        340,
+        -180
+      ],
+      "id": "9e239552-a7f3-4344-b3f5-e736ecbf7ad4",
+      "name": "Job Alerts",
+      "webhookId": " ",
+      "alwaysOutputData": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": " ",
+          "name": " "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_1707742536363216906"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        340,
+        -20
+      ],
+      "id": "9f14f3f4-45e2-4470-a61b-8c9a95d29b2c",
+      "name": "Linkedn ",
+      "webhookId": " ",
+      "alwaysOutputData": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": " ",
+          "name": " "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_3575646981118670472"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        360,
+        140
+      ],
+      "id": " ",
+      "name": "Rejections",
+      "webhookId": " ",
+      "alwaysOutputData": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": " ",
+          "name": " "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "labelIds": [
+          "Label_8800938778384539871"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        360,
+        300
+      ],
+      "id": " ",
+      "name": "Others",
+      "webhookId": " ",
+      "alwaysOutputData": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": " ",
+          "name": " "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": " ",
+          "mode": "list",
+          "cachedResultName": " "
+        },
+        "start": "={{ $json.internalDate }}",
+        "end": "={{ $json.internalDate}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        560,
+        -340
+      ],
+      "id": " ",
+      "name": "Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": " ",
+          "name": "Google Calendar account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Applications",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Interview",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Job Alerts",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Linkedn ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Rejections",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Others",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interview": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "19fa2067-24c6-4595-800a-2ff3b4a24c54",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": " "
+  },
+  "id": " ",
+  "tags": []
+}
