@@ -37,7 +37,7 @@ The following credentials need to be configured in **n8n's credential manager** 
 | `OpenAi account`          | OpenAI API Key      | Used by text classifier node |
 | `Google Calendar account` | Google Calendar API | Optional, used to detect calendar events for interviews |
 
-> ⚠️ **Important:** Never commit actual credential details into Git. This workflow only includes references (names) to those credentials.
+
 
 ### 3. Create Gmail Labels
 
@@ -89,5 +89,5 @@ Each category is defined by strict rules. For example:
 
 ## 📧 Author
 
-Created by [Your Name or GitHub Handle]  
+Created by [Lakshmi Narayana Kakumanu]  
 Contributions and suggestions are welcome!
